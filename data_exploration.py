@@ -47,65 +47,92 @@ def show_data_exploration(data_directory):
     # Display the filtered DataFrame
     st.write(filtered_df)
 
-    if selected_file == 'interventions_bxl2.parquet.gzip':
-        # Iterate over each row to display a button on the map for each intervention
-        # Prepare a DataFrame to hold all latitude and longitude values
+     # Centralized file-specific configurations
+    file_configs = {
+        'interventions3.parquet.gzip': {
+            'event_types': [
+                "P003 - Cardiac arrest",
+                "P014 - Electrocution - electrification",
+                "P019 - Unconscious - syncope",
+                "P011 - Chest pain"
+            ],
+            'columns': {
+                'longitude': "Longitude intervention",
+                'latitude': "Latitude intervention",
+                'event': "EventType Trip"
+            }
+        },
+        'interventions1.parquet.gzip': {
+            'event_types': [
+                "P003 - Cardiac arrest",
+                "P014 - Electrocution - electrification",
+                "P019 - Unconscious - syncope",
+                "P011 - Chest pain"
+            ],
+            'columns': {
+                'longitude': "Longitude intervention",
+                'latitude': "Latitude intervention",
+                'event': "EventType Trip"
+            }
+        },
+        'interventions_bxl2.parquet.gzip': {
+            'event_types': [
+                'HARTSTILSTAND - DOOD - OVERLEDEN',
+                'PIJN OP DE BORST',
+                'CARDIAAL PROBLEEM (ANDERE DAN PIJN AAN DE BORST)'
+            ],
+            'columns': {
+                'longitude': "Longitude intervention",
+                'latitude': "Latitude intervention",
+                'event': "EventType and EventLevel"
+            }
+        },
+        'interventions_bxl.parquet.gzip': {
+            'event_types': [
+                'P003 - Cardiac arrest',
+                'P019 - Unconscious - syncope',
+                'P011 - Chest pain',
+                'P029 - Obstruction of the respiratory tract',
+                'P014 - Electrocution - electrification',
+                'TI (3.3.1) rescue electrocution/electrification'
+            ],
+            'columns': {
+                'longitude': "longitude_intervention",
+                'latitude': "latitude_intervention",
+                'event': "eventtype_trip"
+            }
+        }
+    }
+
+    # Common function to process and display map data
+    def process_and_display_map_data(df, selected_file, show_cardiac_incidences):
         map_data = pd.DataFrame(columns=['lat', 'lon'])
-        show_cardiac_incidences = st.radio("Show cardiac related incidences", ('Yes', 'No'), index=0)
-        # Iterate over the first 20 rows to collect latitude and longitude
+        config = file_configs[selected_file]
+
         for index, row in df.iterrows():
-            current_longitude = row["Longitude intervention"]
-            current_latitude = row["Latitude intervention"]
+            current_longitude = row[config['columns']['longitude']]
+            current_latitude = row[config['columns']['latitude']]
             if pd.isnull(current_longitude) or pd.isnull(current_latitude):
                 continue
-            current_longitude, current_latitude = format_coordinates(row["Longitude intervention"], row["Latitude intervention"])
+
+            current_longitude, current_latitude = format_coordinates(current_longitude, current_latitude)
+
             if show_cardiac_incidences == 'Yes':
-                cardiac_arrest_event_types = [
-                    'HARTSTILSTAND - DOOD - OVERLEDEN',
-                    'PIJN OP DE BORST',
-                    'CARDIAAL PROBLEEM (ANDERE DAN PIJN AAN DE BORST)'
-                ]
-                is_interesting = any(event_type in row["EventType and EventLevel"] for event_type in cardiac_arrest_event_types) if row["EventType and EventLevel"] else False
+                is_interesting = any(event_type in row[config['columns']['event']] for event_type in config['event_types']) if row[config['columns']['event']] else False
                 if is_interesting:
-                    # Append the current latitude and longitude to the map_data DataFrame
                     map_data = pd.concat([map_data, pd.DataFrame({'lat': [float(current_latitude)], 'lon': [float(current_longitude)]})], ignore_index=True)
             else:
-                # Append the current latitude and longitude to the map_data DataFrame without filtering for cardiac incidences
                 map_data = pd.concat([map_data, pd.DataFrame({'lat': [float(current_latitude)], 'lon': [float(current_longitude)]})], ignore_index=True)
 
-        # Plot all collected points on a single map
         if not map_data.empty:
             st.map(map_data)
-    elif selected_file == 'interventions_bxl.parquet.gzip':
-        cardiac_arrest_event_types = [
-            'P003 - Cardiac arrest',
-            'P019 - Unconscious - syncope',
-            'P011 - Chest pain',
-            'P029 - Obstruction of the respiratory tract',
-            'P014 - Electrocution - electrification',
-            'TI (3.3.1) rescue electrocution/electrification'
-        ]
-        map_data = pd.DataFrame(columns=['lat', 'lon'])
+
+
+    # Process and display map data based on the selected file
+    if selected_file in file_configs:
+        # Show cardiac incidences radio button
         show_cardiac_incidences = st.radio("Show cardiac related incidences", ('Yes', 'No'), index=0)
-        # Iterate over the first 20 rows to collect latitude and longitude
-        for index, row in df.iterrows():
-            current_longitude = row["longitude_intervention"]
-            current_latitude = row["latitude_intervention"]
-            if pd.isnull(current_longitude) or pd.isnull(current_latitude):
-                continue
-            current_longitude, current_latitude = format_coordinates(row["longitude_intervention"], row["latitude_intervention"])
-            if show_cardiac_incidences == 'Yes':
-                is_interesting = any(event_type in row["eventtype_trip"] for event_type in cardiac_arrest_event_types) if row["eventtype_trip"] else False
-                if is_interesting:
-                    # Append the current latitude and longitude to the map_data DataFrame
-                    map_data = pd.concat([map_data, pd.DataFrame({'lat': [float(current_latitude)], 'lon': [float(current_longitude)]})], ignore_index=True)
-            else:
-                # Append the current latitude and longitude to the map_data DataFrame without filtering for cardiac incidences
-                map_data = pd.concat([map_data, pd.DataFrame({'lat': [float(current_latitude)], 'lon': [float(current_longitude)]})], ignore_index=True)
-
-        # Plot all collected points on a single map
-        if not map_data.empty:
-            st.map(map_data)
+        process_and_display_map_data(df, selected_file, show_cardiac_incidences)
 
 
 
