@@ -34,8 +34,9 @@ def show_potential_locations():
 
     map_df = pd.DataFrame(map_data)
     map_df.columns = ['lat', 'lon']
+
+    map_df.to_csv('transformed_data/potential_aed_locations.csv', index=False)
     st.write(map_df)
-    # Plot using Streamlit's map function
     st.map(map_df)
 
 def format_coordinates(longitude):
