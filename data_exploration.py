@@ -133,6 +133,7 @@ def show_data_exploration(data_directory):
         # Show cardiac incidences radio button
         show_cardiac_incidences = st.radio("Show cardiac related incidences", ('Yes', 'No'), index=0)
         process_and_display_map_data(df, selected_file, show_cardiac_incidences)
+    
 
 
 
