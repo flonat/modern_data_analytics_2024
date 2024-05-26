@@ -7,13 +7,23 @@ import geopandas as gpd
 from pyproj import Proj, transform
 from shapely.geometry import Point, Polygon
 from geopy.distance import geodesic
+from geopy.geocoders import Nominatim
 from sklearn.cluster import KMeans
 
 # Define a projection from longitude,latitude to Cartesian system
 wgs84 = Proj('epsg:4326')  # WGS84 (longitude, latitude)
 utm32n = Proj('epsg:32632')  # UTM zone 32N (Cartesian system)
 
+geolocator = Nominatim(user_agent="aed_locator")
 
+# Function to reverse geocode coordinates to an address
+def reverse_geocode(lat, lon):
+    location = geolocator.reverse((lat, lon))
+    if location:
+        return location.address
+    else:
+        return "Address not found"
+    
 def show_potential_locations():
     # This function is used to show potential locations for AEDs on a map
 
@@ -97,6 +107,9 @@ def show_potential_locations():
                     # Break the loop as we found a valid location
                     break
 
+        # Add a new column for addresses
+        df_potential_locations['address'] = df_potential_locations.apply(lambda row: reverse_geocode(row['lat'], row['lon']), axis=1)
+
         # Save the DataFrame to a CSV file for future use
         df_potential_locations.to_csv('transformed_data/filtered_potential_aed_locations.csv', index=False)
 
@@ -136,6 +149,9 @@ def show_potential_locations():
 
         # Generate candidate locations
         df_potential_locations = generate_candidate_locations(centers, radius, num_points_per_center)
+
+        # Add a new column for addresses
+        df_potential_locations['address'] = df_potential_locations.apply(lambda row: reverse_geocode(row['lat'], row['lon']), axis=1)
 
         # Save the DataFrame to a CSV file for future use
         df_potential_locations.to_csv('transformed_data/centers_of_gravity_potential_aed_locations.csv', index=False)
