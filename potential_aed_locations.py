@@ -14,15 +14,20 @@ from sklearn.cluster import KMeans
 wgs84 = Proj('epsg:4326')  # WGS84 (longitude, latitude)
 utm32n = Proj('epsg:32632')  # UTM zone 32N (Cartesian system)
 
-geolocator = Nominatim(user_agent="aed_locator")
-
-# Function to reverse geocode coordinates to an address
-def reverse_geocode(lat, lon):
-    location = geolocator.reverse((lat, lon))
-    if location:
-        return location.address
-    else:
-        return "Address not found"
+# Function to reverse geocode coordinates to an address with retry logic
+def reverse_geocode(lat, lon, retries=3, delay=2):
+    for attempt in range(retries):
+        try:
+            location = geolocator.reverse((lat, lon))
+            if location:
+                return location.address
+            else:
+                return "Address not found"
+        except GeocoderUnavailable:
+            if attempt < retries - 1:
+                time.sleep(delay)
+            else:
+                return "Geocoding service unavailable"
     
 def show_potential_locations():
     # This function is used to show potential locations for AEDs on a map
