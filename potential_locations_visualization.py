@@ -3,23 +3,7 @@ import numpy as np
 import pandas as pd
 import folium
 from streamlit_folium import folium_static
-from geopy.geocoders import Nominatim
 
-# Function to reverse geocode coordinates to an address with retry logic
-def reverse_geocode(lat, lon, retries=3, delay=2):
-    for attempt in range(retries):
-        try:
-            location = geolocator.reverse((lat, lon))
-            if location:
-                return location.address
-            else:
-                return "Address not found"
-        except GeocoderUnavailable:
-            if attempt < retries - 1:
-                time.sleep(delay)
-            else:
-                return "Geocoding service unavailable"
-    
 def show_potential_locations_visualization():
 
     st.title("The top 80 optimal potential AEDs location")
@@ -50,7 +34,6 @@ def show_potential_locations_visualization():
     for _, row in optimal_potential_aeds.iterrows():
         # Create popup content for potential AEDs
         intervention_ids = ', '.join(map(str, row['intervention_id']))
-        address = reverse_geocode(row['potential_aed_lat'], row['potential_aed_lon'])
         popup_content = f"Potential AED ID: {row['potential_aed_id']}<br>Arrest Count: {row['arrest_count']}<br>Closest Interventions: {intervention_ids}"
         folium.Marker(
             location=[row['potential_aed_lat'], row['potential_aed_lon']],
@@ -61,7 +44,6 @@ def show_potential_locations_visualization():
     if show_interventions:
         for _, row in optimal_potential_aeds.iterrows():
             for lat, lon, intervention_id, existing_aed_id in zip(row['intervention_lat'], row['intervention_lon'], row['intervention_id'], row['existing_aed_id']):
-                address = reverse_geocode(lat, lon)
                 # Create popup content for interventions
                 popup_content = f"Intervention ID: {intervention_id}<br>Closest Existing AED ID: {existing_aed_id}"
                 folium.Marker(
@@ -73,7 +55,6 @@ def show_potential_locations_visualization():
     if show_existing_aeds:
         for _, row in optimal_potential_aeds.iterrows():
             for lat, lon, existing_aed_id in zip(row['existing_aed_lat'], row['existing_aed_lon'], row['existing_aed_id']):
-                address = reverse_geocode(lat, lon)
                 popup_content = f"Existing AED ID: {existing_aed_id}"
                 folium.Marker(
                     location=[lat, lon],
