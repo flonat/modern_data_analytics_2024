@@ -51,7 +51,7 @@ def extract_aed_locations():
     aed_locations.to_csv(INFORMATION_PATH / 'old_aeds.csv', index=False)
 
     # Save the AED locations data
-    aed_locations.to_csv(LOCATION_PATH / 'old_aeds.csv', index=False, header=False)
+    aed_locations.to_csv(LOCATION_PATH / 'old_aeds.csv', index=False)
 
 
 if __name__ == '__main__':
