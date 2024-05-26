@@ -1,7 +1,6 @@
 import pyarrow.parquet as pq
 import pandas as pd
-import os
-from paths import DATA_PATH
+from paths import DATA_PATH, TRANSFORMED_DATA_PATH
 
 def extract_arrests():
     # Load the interventions data
@@ -61,10 +60,8 @@ def extract_arrests():
     # Filter out arrest by relevant keywords from event type 
     arrests = interventions.loc[interventions['eventtype_trip'].str.contains('hartstilstand|cardiac|cardiaal|borst|chest', na=False)]
 
-    print(arrests.dtypes)
-
     # Save the arrests data to a CSV file
-    arrests.to_csv(DATA_PATH / 'arrests.csv', index=False)
+    arrests.to_csv(TRANSFORMED_DATA_PATH / 'arrests.csv', index=False)
 
 if __name__ == "__main__":
     extract_arrests()
