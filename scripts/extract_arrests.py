@@ -1,6 +1,7 @@
 import pyarrow.parquet as pq
+import numpy as np
 import pandas as pd
-from paths import DATA_PATH, TRANSFORMED_DATA_PATH
+from paths import DATA_PATH, INFORMATION_PATH, LOCATION_PATH
 
 def extract_arrests():
     # Load the interventions data
@@ -60,8 +61,16 @@ def extract_arrests():
     # Filter out arrest by relevant keywords from event type 
     arrests = interventions.loc[interventions['eventtype_trip'].str.contains('hartstilstand|cardiac|cardiaal|borst|chest', na=False)]
 
+    # Extract normalized latitude and longitude of arrests
+    arrests = arrests.dropna(subset=['latitude_intervention', 'longitude_intervention'])
+    arrests['latitude_intervention'] /= 10**round(np.log10(arrests['latitude_intervention'] / 50))
+    arrests['longitude_intervention'] /= 10**round(np.log10(arrests['longitude_intervention'] / 5))
+
     # Save the arrests data to a CSV file
-    arrests.to_csv(TRANSFORMED_DATA_PATH / 'arrests.csv', index=False)
+    arrests.to_csv(INFORMATION_PATH / 'arrests.csv', index=False)
+
+    # Save the arrest locations to a CSV file
+    arrests[['latitude_intervention', 'longitude_intervention']].to_csv(LOCATION_PATH / 'arrests.csv', index=False, header=False)
 
 if __name__ == "__main__":
     extract_arrests()
