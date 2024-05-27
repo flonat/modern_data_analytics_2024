@@ -57,7 +57,7 @@ def compare_vital_distances(new_aed_csv, old_aed_csv='old_aeds.csv'):
         'old_aed': 'existing_aed_id',
         'old_distance': 'distance_to_existing_aed',
         'old_lat': 'existing_aed_lat',
-        'old_lon': 'existing_aed_lon'
+        'old_lon': 'existing_aed_lo'
     }, axis=1, inplace=True)
 
     closer_new_aeds.to_csv(COMPARE_PATH / f'{new_aed_csv.split('.')[0]}__{old_aed_csv}', index=False)
