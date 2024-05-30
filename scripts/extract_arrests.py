@@ -135,6 +135,11 @@ def extract_arrests():
         np.log10(arrests["longitude_intervention"] / 5)
     )
 
+    # Drop duplicate lat & lon
+    arrests = arrests.drop_duplicates(
+        subset=["latitude_intervention", "longitude_intervention"]
+    )
+
     # Save the arrests data to a CSV file
     arrests.to_csv(INFORMATION_PATH / "arrests.csv", index=False)
 
