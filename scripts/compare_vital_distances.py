@@ -1,8 +1,8 @@
 import pandas as pd
 import sys
 import numpy as np
-from paths import LOCATION_PATH, DISTANCE_PATH, DISTANCE_PATH, COMPARE_PATH
-from calculate_vital_distances import calculate_vital_distances
+from scripts.paths import LOCATION_PATH, DISTANCE_PATH, DISTANCE_PATH, COMPARE_PATH
+from scripts.calculate_vital_distances import calculate_vital_distances
 
 def nest_list(group):
     return group.tolist()
@@ -60,7 +60,8 @@ def compare_vital_distances(new_aed_csv, old_aed_csv='old_aeds.csv'):
         'old_lon': 'existing_aed_lon'
     }, axis=1, inplace=True)
 
-    closer_new_aeds.to_csv(COMPARE_PATH / f'{new_aed_csv.split('.')[0]}__{old_aed_csv}', index=False)
+    new_aed_filename = new_aed_csv.split('.')[0] if '.csv' in new_aed_csv else new_aed_csv
+    closer_new_aeds.to_csv(COMPARE_PATH / f'{new_aed_filename}__{old_aed_csv}', index=False)
         
 if __name__ == '__main__':
     if len(sys.argv) > 2:

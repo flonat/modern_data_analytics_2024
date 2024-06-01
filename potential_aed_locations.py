@@ -64,10 +64,14 @@ def show_potential_locations():
     st.write("The will use a brute force approach. We take a dot on the grid and then go through the list of existing cardiac arrest locations. We run through the list. If it's in the radius of an existing cardiac arrest we keep it. If not we discart the candidate location")
 
     if st.button('Run selection of grid dots'):
-        df_interventions = pd.read_csv('./transformed_data/intervention_coordinates.csv')
+        df_interventions = pd.read_csv('./transformed_data/location/arrests.csv')
 
         # Convert the intervention locations to a GeoDataFrame
-        gdf_interventions = gpd.GeoDataFrame(df_interventions, geometry=gpd.points_from_xy(df_interventions.lon, df_interventions.lat), crs='epsg:4326')
+        gdf_interventions = gpd.GeoDataFrame(
+            df_interventions, 
+            geometry=gpd.points_from_xy(df_interventions.lon, df_interventions.lat), 
+            crs='epsg:4326'
+        )
 
         # Project the intervention locations to the Cartesian system
         gdf_interventions['x'], gdf_interventions['y'] = transform(wgs84, utm32n, gdf_interventions['lon'].values, gdf_interventions['lat'].values)
@@ -128,7 +132,7 @@ def show_potential_locations():
     radius = st.number_input('Radius around the center of gravity (in km)', min_value=1, max_value=100, value=2)
 
     if st.button('Run clustering'):
-        df_interventions = pd.read_csv('./transformed_data/intervention_coordinates.csv')
+        df_interventions = pd.read_csv('./transformed_data/location/arrests.csv')
         # Define the number of centers of gravity
         # Get the centers of gravity
         centers = get_centers_of_gravity(df_interventions, N)

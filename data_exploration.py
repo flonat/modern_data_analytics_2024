@@ -134,6 +134,18 @@ def show_data_exploration(data_directory):
         show_cardiac_incidences = st.radio("Show cardiac related incidences", ('Yes', 'No'), index=0)
         process_and_display_map_data(df, selected_file, show_cardiac_incidences)
     
+    st.divider()
+    st.title('Results')
+    st.text('After some cleanup we managed to create a consolided CSV of cardiac arrests')
+    
+    arrests_df = pd.read_csv(os.path.join('transformed_data', 'location/arrests.csv'))
+
+    # Assuming the DataFrame has 'latitude' and 'longitude' columns
+    arrests_map_data = arrests_df[['lat', 'lon']]
+
+    # Display the map
+    st.map(arrests_map_data)
+    
 
 
 
