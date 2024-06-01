@@ -7,22 +7,21 @@ import ast
 import plotly.express as px
 
 def show_potential_locations_visualization():
-    st.title("The top 50 optimal potential AEDs location")
-    st.write("**Now we can visualize the 50 optimal potential AED based on the selected algorithm.**")
-
-    # Add a select box for the algorithm selection
-    algorithm = st.selectbox('Select the algorithm', ['Grid-based', 'Clustering'])
+    st.title("The top optimal potential AEDs location")
+    # Move selection boxes to the sidebar
+    optimal_num = st.slider('How many potential AEDs you are looking for?', 50, 200, 50, step=50)
+    algorithm = st.radio('Select the algorithm', ['Grid-based', 'Clustering'])
 
     # Load the grouped interventions data based on the selected algorithm
     if algorithm == 'Grid-based':
-        grouped_interventions = pd.read_csv("./transformed_data/compare/new_aeds_grid__old_aeds.csv")
+        grouped_interventions = pd.read_csv("./transformed_data/compare/add_province_grid.csv")
     else:  # Clustering
-        grouped_interventions = pd.read_csv("./transformed_data/compare/centers_of_gravity_potential_aed_locations__new_aeds_grid.csv")  # adjust this path to your clustering results
+        grouped_interventions = pd.read_csv("./transformed_data/compare/add_province_gravity.csv")  # adjust this path to your clustering results
 
-    
     # Filter the top 50 potential AEDs by arrest_count
-    optimal_potential_aeds = grouped_interventions.nlargest(50, 'arrest_count')
-    
+    optimal_potential_aeds = grouped_interventions.nlargest(optimal_num, 'arrest_count')
+    st.write(f"**With a budget of {optimal_num} AEDs, {algorithm} algorithm shortens the distance to the closest AED for {optimal_potential_aeds['arrest_count'].sum()} cardiac arrests**")
+   
     # Convert stringified lists to actual lists
     optimal_potential_aeds['intervention_lat'] = optimal_potential_aeds['intervention_lat'].apply(eval)
     optimal_potential_aeds['intervention_lon'] = optimal_potential_aeds['intervention_lon'].apply(eval)
@@ -78,23 +77,24 @@ def show_potential_locations_visualization():
     # Display initial map in Streamlit
     selected_potential_aed = st.selectbox('Select your interested potential AED ID', ["--"] + list(optimal_potential_aeds['potential_aed_id']))
     if selected_potential_aed == "--":
-        # Plotly dot plot
+        # Plotly scatter plot
         fig = px.scatter(
             optimal_potential_aeds, 
+            x='Province', 
             y='arrest_count', 
-            x='potential_aed_id', 
-            labels={'arrest_count': 'Arrest Count', 'potential_aed_id': 'Potential AED ID'},
-            title='Potential AED ID x The number of cardiac arrests with shortened rescue distance ',
+            hover_data=['potential_aed_id'],
+            labels={'arrest_count': 'Arrest Count', 'province': 'Province'},
+            title='Hover over an AED point to get ID information',
             size='arrest_count',
             color='arrest_count',
             color_continuous_scale=px.colors.sequential.Viridis
         )
-        fig.update_traces(marker=dict(line=dict(width=2, color='DarkSlateGrey')))
         fig.update_layout(
             yaxis=dict(title='Arrest Count'),
-            xaxis=dict(title='Potential AED ID'),
+            xaxis=dict(title='Province'),
             showlegend=False
         )
+        fig.update_traces(marker=dict(line=dict(width=2, color='DarkSlateGrey')))
         return st.plotly_chart(fig)
 
     # Filter the data for the selected potential AED
@@ -116,7 +116,7 @@ def show_potential_locations_visualization():
     # Add markers for potential AEDs
     for _, row in optimal_potential_aeds.iterrows():
         intervention_ids = ', '.join(map(str, row['intervention_id']))
-        popup_content = f"Potential AED ID: {row['potential_aed_id']}<br>Arrest Count: {row['arrest_count']}<br>Closest Interventions: {intervention_ids}"
+        popup_content = f"Potential AED ID: {row['potential_aed_id']}<br>Arrest Count: {row['arrest_count']}<br>Province: {row['Province']}"
         folium.Marker(
             location=[row['potential_aed_lat'], row['potential_aed_lon']],
             popup=folium.Popup(popup_content, max_width=300),
