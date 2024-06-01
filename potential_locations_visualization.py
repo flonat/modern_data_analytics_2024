@@ -7,11 +7,18 @@ import ast
 import plotly.express as px
 
 def show_potential_locations_visualization():
-
     st.title("The top 50 optimal potential AEDs location")
-    st.write("**Now we can visualize the 50 optimal potential AED based on the rectangular grid of 100,000 candidates.**")
-    # Load the grouped interventions data
-    grouped_interventions = pd.read_csv("./transformed_data/compare/new_aeds_grid__old_aeds.csv")
+    st.write("**Now we can visualize the 50 optimal potential AED based on the selected algorithm.**")
+
+    # Add a select box for the algorithm selection
+    algorithm = st.selectbox('Select the algorithm', ['Grid-based', 'Clustering'])
+
+    # Load the grouped interventions data based on the selected algorithm
+    if algorithm == 'Grid-based':
+        grouped_interventions = pd.read_csv("./transformed_data/compare/new_aeds_grid__old_aeds.csv")
+    else:  # Clustering
+        grouped_interventions = pd.read_csv("./transformed_data/compare/centers_of_gravity_potential_aed_locations__new_aeds_grid.csv")  # adjust this path to your clustering results
+
     
     # Filter the top 50 potential AEDs by arrest_count
     optimal_potential_aeds = grouped_interventions.nlargest(50, 'arrest_count')
