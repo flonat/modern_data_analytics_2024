@@ -159,12 +159,14 @@ def logistic_regression():
             x=top_arrests,
             y=top_arrests.index.astype(str),
             orientation='h',
-            marker=dict(color='gray')
+            marker=dict(color='gray'),
+            text=top_arrests.astype(str),
+            textposition='outside'
         ))
         fig6.update_layout(
-            title='Total Number of Arrests per Control Category',
+            title=f'Total Number of Arrests per {control}',
             xaxis_title='Number of Arrests',
-            yaxis_title='Control Category',
+            yaxis_title=control,
             template='plotly_white'
         )
         st.plotly_chart(fig6, use_container_width=True)
@@ -176,12 +178,14 @@ def logistic_regression():
             x=top_arrests_plotted.groupby(control)['waiting_time_combined'].mean()[top_arrests.index],
             y=top_arrests.index.astype(str),
             orientation='h',
-            marker=dict(color='RoyalBlue')
+            marker=dict(color='RoyalBlue'),            
+            text=top_arrests_plotted.groupby(control)['waiting_time_combined'].mean()[top_arrests.index].round(2).astype(str),
+            textposition='outside'
         ))
         fig7.update_layout(
-            title='Average Waiting Time per Control Category',
+            title=f'Average Waiting Time per {control}',
             xaxis_title='Average Waiting Time (minutes)',
-            yaxis_title='Control Category',
+            yaxis_title=control,
             template='plotly_white'
         )
         st.plotly_chart(fig7, use_container_width=True)
@@ -193,12 +197,14 @@ def logistic_regression():
             x=(top_arrests_plotted.groupby(control)['survived'].mean() * 100)[top_arrests.index],
             y=top_arrests.index.astype(str),
             orientation='h',
-            marker=dict(color='MediumSeaGreen')
+            marker=dict(color='MediumSeaGreen'),
+            text=(top_arrests_plotted.groupby(control)['survived'].mean() * 100)[top_arrests.index].round(2).astype(str) + '%',
+            textposition='outside'
         ))
         fig8.update_layout(
-            title='Survival Percentage per Control Category',
+            title=f'Survival Percentage per {control}',
             xaxis_title='Survival Percentage (%)',
-            yaxis_title='Control Category',
+            yaxis_title=control,
             template='plotly_white'
         )
         st.plotly_chart(fig8, use_container_width=True)
