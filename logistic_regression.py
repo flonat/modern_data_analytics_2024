@@ -138,7 +138,7 @@ def logistic_regression():
             mode='markers',
             name=f'Actual - {category}',
             text=[
-                f'Actual: {row['actual_percentage']:.2f}% ± {row['actual_percentage_std']:.2f}%<br>Predicted: {row['predicted_percentage']:.2f}%<br>Count: {row['count']}'
+                f"Actual: {row['actual_percentage']:.2f}% ± {row['actual_percentage_std']:.2f}%<br>Predicted: {row['predicted_percentage']:.2f}%<br>Count: {row['count']}"
                 for i, row in category_data.iterrows()
             ],
             hoverinfo='text',

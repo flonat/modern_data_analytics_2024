@@ -8,21 +8,23 @@ from logistic_regression import logistic_regression
 # Set the path to your data directory
 data_directory = "./data"
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs(["Data Exploration", "Possible locations", "Visualization", "Comparing two algos", "Predict patient survival from waiting time"])
+data_exploration, possible_locations, viz, logistics = st.tabs([
+    "Data Exploration", 
+    "Possible locations", 
+    "Visualization", 
+    "Predict patient survival from waiting time"
+    ])
 
-with tab1:
+with data_exploration:
     show_data_exploration(data_directory)
 
-with tab2:
+with possible_locations:
     show_potential_locations()
 
-with tab3:
+with viz:
     show_potential_locations_visualization()
 
-with tab4:
-    show_compare_algos()
-
-with tab5:
+with logistics:
     logistic_regression()
 
 
