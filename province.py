@@ -4,7 +4,7 @@ import googlemaps
 cluster = pd.read_csv('./transformed_data/compare/centers_of_gravity_potential_aed_locations__new_aeds_grid.csv')
 grid = pd.read_csv('./transformed_data/compare/new_aeds_grid__old_aeds.csv')
 # Replace 'YOUR_API_KEY' with your actual API key
-gmaps = googlemaps.Client(key='AIzaSyAiawrboFUBNPog2fhbylLw75XTOND061w')
+gmaps = googlemaps.Client(key='your_googleAPI_key')
 
 def get_province(row):
     # Perform reverse geocoding
