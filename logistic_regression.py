@@ -17,25 +17,6 @@ st.title('Predict patient survival from waiting time using logistic regression')
 def load_data():
     ts_cols = ['t0', 't1', 't1confirmed', 't2', 't3', 't4', 't5', 't6', 't7', 't9']
     arrests = pd.read_csv(INFORMATION_PATH / 'arrests.csv', parse_dates=ts_cols, date_format='ISO8601')
-
-    arrests['severity'] = arrests['eventlevel_trip'].fillna(-1).astype(int).astype(str)
-    arrests['travel_time'] = arrests['calculated_traveltime_destinatio'] / 60
-    arrests['travel_time_ts'] = (arrests['t5'] - arrests['t4']).dt.total_seconds() / 60
-    arrests['waiting_time_ts'] = (arrests['t3'] - arrests['t0']).dt.total_seconds() / 60
-    arrests['care_time_ts'] = (arrests['t4'] - arrests['t3']).dt.total_seconds() / 60
-    arrests['departure_time_ts'] = (arrests['t6'] - arrests['t1']).dt.total_seconds() / 60
-
-    arrests['travel_time_combined'] = arrests['travel_time'].fillna(arrests['travel_time_ts'])
-    arrests['waiting_time_combined'] = arrests['waiting_time'].fillna(arrests['waiting_time_ts'])
-
-    arrests['waiting_time_combined'] = arrests['waiting_time_combined'].mask((arrests['waiting_time_combined'] < 0) | (arrests['waiting_time_combined'] > 2100))
-    arrests['travel_time_combined'] = arrests['travel_time_combined'].mask((arrests['travel_time_combined'] < 0) | (arrests['travel_time_combined'] > 300))
-    arrests['care_time_ts'] = arrests['care_time_ts'].mask((arrests['care_time_ts'] < 0) | (arrests['care_time_ts'] > 125))
-
-    arrests['care_travel_time'] = arrests['care_time_ts'] + arrests['travel_time_combined']
-    arrests['survived'] = ~arrests['abandon_reason'].isin(['overleden', 'dood ter plaatse'])
-
-    arrests['no_control'] = 'no control'
     return arrests
 
 def logistic_regression():

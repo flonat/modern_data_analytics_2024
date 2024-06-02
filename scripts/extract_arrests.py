@@ -135,10 +135,25 @@ def extract_arrests():
         np.log10(arrests["longitude_intervention"] / 5)
     )
 
-    # Drop duplicate lat & lon
-    arrests = arrests.drop_duplicates(
-        subset=["latitude_intervention", "longitude_intervention"]
-    )
+    # Extract extra features from arrests
+    arrests['severity'] = arrests['eventlevel_trip'].fillna(-1).astype(int).astype(str)
+    arrests['travel_time'] = arrests['calculated_traveltime_destinatio'] / 60
+    arrests['travel_time_ts'] = (arrests['t5'] - arrests['t4']).dt.total_seconds() / 60
+    arrests['waiting_time_ts'] = (arrests['t3'] - arrests['t0']).dt.total_seconds() / 60
+    arrests['care_time_ts'] = (arrests['t4'] - arrests['t3']).dt.total_seconds() / 60
+    arrests['departure_time_ts'] = (arrests['t6'] - arrests['t1']).dt.total_seconds() / 60
+
+    arrests['travel_time_combined'] = arrests['travel_time'].fillna(arrests['travel_time_ts'])
+    arrests['waiting_time_combined'] = arrests['waiting_time'].fillna(arrests['waiting_time_ts'])
+
+    arrests['waiting_time_combined'] = arrests['waiting_time_combined'].mask((arrests['waiting_time_combined'] < 0) | (arrests['waiting_time_combined'] > 2100))
+    arrests['travel_time_combined'] = arrests['travel_time_combined'].mask((arrests['travel_time_combined'] < 0) | (arrests['travel_time_combined'] > 300))
+    arrests['care_time_ts'] = arrests['care_time_ts'].mask((arrests['care_time_ts'] < 0) | (arrests['care_time_ts'] > 125))
+
+    arrests['care_travel_time'] = arrests['care_time_ts'] + arrests['travel_time_combined']
+    arrests['survived'] = ~arrests['abandon_reason'].isin(['overleden', 'dood ter plaatse'])
+
+    arrests['no_control'] = 'no control'
 
     # Save the arrests data to a CSV file
     arrests.to_csv(INFORMATION_PATH / "arrests.csv", index=False)

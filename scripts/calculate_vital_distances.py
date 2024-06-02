@@ -26,6 +26,7 @@ def calculate_vital_distances(aed_csv='old_aeds.csv'):
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
+        print('Calculating vital distances of', sys.argv[1])
         calculate_vital_distances(sys.argv[1])
     else:
         print('No AED locations file provided, using old_aeds.csv')
