@@ -34,7 +34,7 @@ def logistic_regression():
     col1, col2 = st.columns(2)
     
     with col1:
-        death_weight = st.slider('Relative weight of deaths', 1, 40, 20)
+        death_weight = st.slider('Relative weight of deaths', 1, 40, 1)
     with col2:
         n_top_categories = st.slider('Number of top categories to display', 1, 10, 5)
 
