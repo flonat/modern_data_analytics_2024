@@ -33,9 +33,9 @@ Additionally, users can enter a specific potential AED ID to view the details of
 
     # Load the grouped interventions data based on the selected algorithm
     if algorithm == 'Grid-based':
-        grouped_interventions = pd.read_csv(COMPARE_PATH / "add_province_grid.csv")
+        grouped_interventions = pd.read_csv(COMPARE_PATH / "new_aeds_grid__old_aeds__with_province.csv")
     else:  # Clustering
-        grouped_interventions = pd.read_csv(COMPARE_PATH / "add_province_gravity.csv")  # adjust this path to your clustering results
+        grouped_interventions = pd.read_csv(COMPARE_PATH / "new_aeds_cluster__old_aeds__with_province.csv")  # adjust this path to your clustering results
 
     optimal_potential_aeds = grouped_interventions.nlargest(optimal_num, 'arrest_count')
     st.write(f"**With a budget of {optimal_num} AEDs, {algorithm} algorithm shortens the distance to the closest AED for {optimal_potential_aeds['arrest_count'].sum()} cardiac arrests**")
