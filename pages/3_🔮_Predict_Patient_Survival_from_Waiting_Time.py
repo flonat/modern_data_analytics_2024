@@ -119,7 +119,7 @@ def logistic_regression():
             mode='markers',
             name=f'Actual - {category}',
             text=[
-                f"Actual: {row['actual_percentage']:.2f}% ± {row['actual_percentage_std']:.2f}%<br>Predicted: {row['predicted_percentage']:.2f}%<br>Count: {row['count']}"
+                f"{control}: <b>{category}</b><br>Waiting time: <b>{row['waiting_time_combined']}</b><br>Actual survival rate: <b>{row['actual_percentage']:.2f}% ± {row['actual_percentage_std']:.2f}%</b><br>Predicted survival rate: <b>{row['predicted_percentage']:.2f}%</b><br>Count: <b>{row['count']}</b>"
                 for i, row in category_data.iterrows()
             ],
             hoverinfo='text',
@@ -155,7 +155,6 @@ def logistic_regression():
         # Plot horizontal bar chart of total number of arrests per control category using top_survival_percentages dataframe
         fig6 = go.Figure()
         top_arrests = top_survival_percentages.groupby(control)['count'].sum().sort_values()
-        print(top_arrests.index)
         fig6.add_trace(go.Bar(
             x=top_arrests,
             y=top_arrests.index.astype(str),

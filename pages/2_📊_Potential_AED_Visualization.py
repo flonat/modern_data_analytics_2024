@@ -4,7 +4,7 @@ import folium
 from streamlit_folium import st_folium
 import ast
 import plotly.express as px
-from scripts.paths import COMPARE_PATH
+from ..scripts.paths import COMPARE_PATH
 
 st.set_page_config(page_title="Potential AED Visualization", page_icon="🎯", layout='wide')
 
