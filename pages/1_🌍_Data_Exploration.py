@@ -5,7 +5,6 @@ import os
 from scripts.paths import LOCATION_PATH
 
 st.set_page_config(page_title="Data Exploration", page_icon="🌍", layout='wide')
-st.sidebar.header("Data Exploration")
 
 @st.cache_data
 def load_data(file_path):

@@ -11,7 +11,6 @@ import plotly.graph_objects as go
 from scripts.paths import INFORMATION_PATH
 
 st.set_page_config(page_title="Predict patient survival from waiting time", page_icon="🔮", layout='wide')
-st.sidebar.header("Predict patient survival from waiting time")
 
 st.title('Predict patient survival from waiting time using logistic regression')
 

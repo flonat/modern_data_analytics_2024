@@ -11,7 +11,6 @@ from sklearn.cluster import KMeans
 from scripts.paths import LOCATION_PATH
 
 st.set_page_config(page_title="Possible AED Algorithms", page_icon="🎯", layout='wide')
-st.sidebar.header("Possible locations")
 
 # Define a projection from longitude,latitude to Cartesian system
 wgs84 = Proj('epsg:4326')  # WGS84 (longitude, latitude)
