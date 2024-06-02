@@ -1,26 +1,11 @@
 import streamlit as st
-from data_exploration import show_data_exploration
-from potential_aed_locations import show_potential_locations 
-from potential_locations_visualization import show_potential_locations_visualization
-from comparing_algos import show_compare_algos
-from logistic_regression import logistic_regression
 
-st.set_page_config(layout='wide')
+st.set_page_config(layout='wide',
+                   page_title="Introduction",
+)
 
-# Set the path to your data directory
-data_directory = "./data"
-
-intro, data_exploration, possible_locations, viz, logistics = st.tabs([
-    "Intro 👉",
-    "Data exploration & wrangling 👉", 
-    "Possible locations 👉", 
-    "Visualization 👉", 
-    "Predict patient survival from waiting time"
-    ])
-
-with intro:
-    st.title('Introduction')
-    st.write("""
+st.title('Introduction')
+st.write("""
 In this project, we aimed to analyze the impact of time-to-hospital on patient survival rates, particularly in the context of cardiac arrests. Our approach involved several steps:
 
 1. **Data Exploration & wrangling**: We started by exploring and wrangling the data. We joined multiple datasets to create a consolidated set of cardiac arrests. We also provided an interactive interface for users to select a file, a column from the loaded DataFrame, and a search term to filter the data. This allowed us to understand the structure and characteristics of our data better.
@@ -33,17 +18,4 @@ In this project, we aimed to analyze the impact of time-to-hospital on patient s
 
 Despite the unexpected results from the logistic regression model, this project provided valuable insights into the factors affecting patient survival rates and the potential benefits of strategically placed AEDs. It also highlighted the importance of considering hidden variables when interpreting the results of statistical models.
 """)
-
-with data_exploration:
-    show_data_exploration(data_directory)
-
-with possible_locations:
-    show_potential_locations()
-
-with viz:
-    show_potential_locations_visualization()
-
-with logistics:
-    logistic_regression()
-
 

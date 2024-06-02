@@ -10,6 +10,9 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from scripts.paths import INFORMATION_PATH
 
+st.set_page_config(page_title="Predict patient survival from waiting time", page_icon="🔮", layout='wide')
+st.sidebar.header("Predict patient survival from waiting time")
+
 st.title('Predict patient survival from waiting time using logistic regression')
 
 @st.cache_data
@@ -99,7 +102,6 @@ def logistic_regression():
     top_categories = survival_percentages.groupby(control)['count'].sum().sort_values(ascending=False).index[:n_top_categories]
     top_arrests_plotted = arrests_plotted[arrests_plotted[control].isin(top_categories)]
     top_survival_percentages = survival_percentages[survival_percentages[control].isin(top_categories)]
-    top_survival_percentages[control] = pd.Categorical(top_survival_percentages[control], categories=top_categories[::-1], ordered=True)
     
 
     colors = {}
@@ -153,9 +155,11 @@ def logistic_regression():
     with col6:
         # Plot horizontal bar chart of total number of arrests per control category using top_survival_percentages dataframe
         fig6 = go.Figure()
+        top_arrests = top_survival_percentages.groupby(control)['count'].sum().sort_values()
+        print(top_arrests.index)
         fig6.add_trace(go.Bar(
-            x=top_survival_percentages.groupby(control)['count'].sum(),
-            y=top_survival_percentages.groupby(control)['count'].sum().index,
+            x=top_arrests,
+            y=top_arrests.index.astype(str),
             orientation='h',
             marker=dict(color='gray')
         ))
@@ -171,8 +175,8 @@ def logistic_regression():
         # Plot horizontal bar chart of average waiting time per control category using top_survival_percentages dataframe
         fig7 = go.Figure()
         fig7.add_trace(go.Bar(
-            x=top_arrests_plotted.groupby(control)['waiting_time_combined'].mean(),
-            y=top_arrests_plotted.groupby(control)['waiting_time_combined'].mean().index,
+            x=top_arrests_plotted.groupby(control)['waiting_time_combined'].mean()[top_arrests.index],
+            y=top_arrests.index.astype(str),
             orientation='h',
             marker=dict(color='RoyalBlue')
         ))
@@ -188,8 +192,8 @@ def logistic_regression():
         # PLot horizontal bar chart of average survival percentage per control category using top_survival_percentages dataframe
         fig8 = go.Figure()
         fig8.add_trace(go.Bar(
-            x=top_arrests_plotted.groupby(control)['survived'].mean() * 100,
-            y=top_arrests_plotted.groupby(control)['survived'].mean().index,
+            x=(top_arrests_plotted.groupby(control)['survived'].mean() * 100)[top_arrests.index],
+            y=top_arrests.index.astype(str),
             orientation='h',
             marker=dict(color='MediumSeaGreen')
         ))
@@ -202,6 +206,5 @@ def logistic_regression():
         st.plotly_chart(fig8, use_container_width=True)
 
 
-if __name__ == '__main__':
-    logistic_regression()
+logistic_regression()
 

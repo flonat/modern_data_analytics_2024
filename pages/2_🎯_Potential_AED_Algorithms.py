@@ -10,6 +10,9 @@ from geopy.distance import geodesic
 from sklearn.cluster import KMeans
 from scripts.paths import LOCATION_PATH
 
+st.set_page_config(page_title="Possible AED Algorithms", page_icon="🎯", layout='wide')
+st.sidebar.header("Possible locations")
+
 # Define a projection from longitude,latitude to Cartesian system
 wgs84 = Proj('epsg:4326')  # WGS84 (longitude, latitude)
 utm32n = Proj('epsg:32632')  # UTM zone 32N (Cartesian system)
@@ -23,16 +26,16 @@ def load_data(file_path):
 def show_potential_locations():
     # This function is used to show potential locations for AEDs on a map
 
-    st.title('Creating candidate locations for new AEDs')
+    st.title('🎯 Possible AED Algorithms')
 
     st.write("""
 This section is designed to help identify potential locations for AEDs using two distinct approaches: 
 a simple grid-based system and a more advanced K-means clustering method.
-The grid-based system generates a grid of latitude and longitude points within defined geographical boundaries, providing a straightforward, evenly distributed set of potential AED locations.
-The K-means clustering method, on the other hand, identifies centers of gravity of cardiac arrest occurrences and generates potential AED locations around these centers. This approach allows for more targeted placement of AEDs in areas with higher incidences of cardiac arrests.
-You can customize the number of centers of gravity, the number of candidate locations, and the radius around the center of gravity. The potential AED locations are displayed on a map for easy visualization. This tool aims to assist in strategic planning of AED placements, potentially improving response times in emergency situations and saving lives.
              """)
 
+    st.header('Grid-based System')
+    st.text("""
+The grid-based system generates a grid of latitude and longitude points within defined geographical boundaries, providing a straightforward, evenly distributed set of potential AED locations.""")
 
     # Define Belgium's boundary using a simplified polygon or use an actual shapefile
     # This is not implemented yet, but you can use the commented line below as a starting point
@@ -77,7 +80,9 @@ You can customize the number of centers of gravity, the number of candidate loca
     st.write("Grid displayed on a map")
     st.map(map_df)
 
-    
+    st.header('K-means Clustering')
+    st.write("""The K-means clustering method, on the other hand, identifies centers of gravity of cardiac arrest occurrences and generates potential AED locations around these centers. This approach allows for more targeted placement of AEDs in areas with higher incidences of cardiac arrests.
+You can customize the number of centers of gravity, the number of candidate locations, and the radius around the center of gravity. The potential AED locations are displayed on a map for easy visualization. This tool aims to assist in strategic planning of AED placements, potentially improving response times in emergency situations and saving lives.""")
     st.write("We can do better though. Instead of creating a grid we can first determine the centers of gravity of the cardiac arrest occuring. We could then generate the candidate AED locations around those centers.")
 
     N = st.number_input('Number of centers of gravity', min_value=1, max_value=100, value=10)
@@ -145,3 +150,5 @@ def format_coordinates(longitude):
     # This function is used to format the longitude to 6 decimal places
     formatted_longitude = "{:.6f}".format(longitude)
     return formatted_longitude
+
+show_potential_locations()

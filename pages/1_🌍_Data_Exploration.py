@@ -4,13 +4,21 @@ import pandas as pd
 import os
 from scripts.paths import LOCATION_PATH
 
+st.set_page_config(page_title="Data Exploration", page_icon="🌍", layout='wide')
+st.sidebar.header("Data Exploration")
+
 @st.cache_data
 def load_data(file_path):
     df = pd.read_csv(file_path)
     return df
 
+def format_coordinates(longitude, latitude):
+    formatted_longitude = str(longitude)[:1] + '.' + str(longitude).replace('.', '')[1:]
+    formatted_latitude = str(latitude)[:2] + '.' + str(latitude).replace('.', '')[2:]
+    return formatted_longitude, formatted_latitude
+
 def show_data_exploration(data_directory):
-    st.title('Exploring and wrangling the data')
+    st.title('🌍 Data Exploration')
 
     st.write('This tab is for data exploration and wrangling. It provides an interface to interact with the data. Users can select a file from the list of gzipped Parquet files. The selected file\'s data is loaded into a DataFrame. The DataFrame\'s columns are listed for selection. Users can select a column to view its unique values. A search input field is available for entering a term to filter the data based on the selected column.')
 
@@ -164,3 +172,7 @@ def format_coordinates(longitude, latitude):
     formatted_longitude = str(longitude)[:1] + '.' + str(longitude).replace('.', '')[1:]
     formatted_latitude = str(latitude)[:2] + '.' + str(latitude).replace('.', '')[2:]
     return formatted_longitude, formatted_latitude
+    
+
+data_directory = "./data"
+show_data_exploration(data_directory)

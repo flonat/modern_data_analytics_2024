@@ -6,6 +6,9 @@ import ast
 import plotly.express as px
 from scripts.paths import COMPARE_PATH
 
+st.set_page_config(page_title="Potential AED Visualization", page_icon="🎯", layout='wide')
+st.sidebar.header("Visualization")
+
 @st.cache_data
 def load_data(file_path):
     df = pd.read_csv(file_path)
@@ -190,3 +193,4 @@ Additionally, users can enter a specific potential AED ID to view the details of
             height=600,
             )
    
+show_potential_locations_visualization()
