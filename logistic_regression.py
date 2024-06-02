@@ -10,19 +10,17 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from scripts.paths import INFORMATION_PATH
 
+st.title('Predict patient survival from waiting time using logistic regression')
 
 @st.cache_data
-def load_data():
+def load_arrests():
     ts_cols = ['t0', 't1', 't1confirmed', 't2', 't3', 't4', 't5', 't6', 't7', 't9']
     arrests = pd.read_csv(INFORMATION_PATH / 'arrests.csv', parse_dates=ts_cols, date_format='ISO8601')
     return arrests
 
 def logistic_regression():
-    st.title('Predict patient survival from waiting time using logistic regression')
-    st.write('In this section, we aim to build a logistic regression model to predict patient survival based on waiting time. Waiting time is a critical factor in emergency medical situations, and understanding its impact on patient outcomes can provide valuable insights for healthcare providers. We will use various control variables in our model to account for other factors that might influence patient survival. Additionally, we will calculate survival percentages for different waiting times to visualize the relationship between waiting time and survival. Our goal is not only to build a predictive model but also to understand the underlying factors that drive patient survival in emergency situations. The insights derived from this analysis will be used to improve our Automated External Defibrillator (AED) locations, thereby enhancing emergency response times and potentially increasing survival rates.')
-
     data_load_state = st.text('Loading data...')
-    arrests = load_data()
+    arrests = load_arrests()
     data_load_state.text('Loading data...done!')
     # categorical_cols = arrests.select_dtypes(include='object').columns
     categorical_cols = ['no_control', 'vector_type', 'eventtype_trip', 'severity', 'cityname_intervention', 'province_intervention']
@@ -202,8 +200,6 @@ def logistic_regression():
             template='plotly_white'
         )
         st.plotly_chart(fig8, use_container_width=True)
-    st.write('## Conclusion')
-    st.write('After analyzing the data and building the logistic regression model, we found that longer waiting times surprisingly increased survival times. This is counter-intuitive as we would generally expect that longer waiting times would lead to lower survival rates. Despite controlling for all possible features we could think of, we did not observe a negative relation between survival odds and waiting time. This suggests that there might be a third variable that we have not considered in our model that is driving both longer waiting times and survival times. This could be a confounding variable that is influencing both the waiting times and the survival times. Further investigation is needed to identify this variable and understand its impact on our model.')
 
 
 if __name__ == '__main__':

@@ -8,10 +8,16 @@ from pyproj import Proj, transform
 from shapely.geometry import Point, Polygon
 from geopy.distance import geodesic
 from sklearn.cluster import KMeans
+from scripts.paths import LOCATION_PATH
 
 # Define a projection from longitude,latitude to Cartesian system
 wgs84 = Proj('epsg:4326')  # WGS84 (longitude, latitude)
 utm32n = Proj('epsg:32632')  # UTM zone 32N (Cartesian system)
+
+@st.cache_data
+def load_data(file_path):
+    df = pd.read_csv(file_path)
+    return df
 
 
 def show_potential_locations():
@@ -84,7 +90,9 @@ You can customize the number of centers of gravity, the number of candidate loca
     radius = st.number_input('Radius around the center of gravity (in km)', min_value=1, max_value=100, value=2)
 
     if st.button('Run clustering'):
-        df_interventions = pd.read_csv('./transformed_data/location/arrests.csv')
+        data_load_state = st.text('Loading data...')
+        df_interventions = load_data(LOCATION_PATH / 'arrests.csv')
+        data_load_state.text('Loading data...done!')
         # Define the number of centers of gravity
         # Get the centers of gravity
         centers = get_centers_of_gravity(df_interventions, N)

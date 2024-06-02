@@ -2,6 +2,12 @@ import streamlit as st
 import pyarrow.parquet as pq
 import pandas as pd
 import os
+from scripts.paths import LOCATION_PATH
+
+@st.cache_data
+def load_data(file_path):
+    df = pd.read_csv(file_path)
+    return df
 
 def show_data_exploration(data_directory):
     st.title('Exploring and wrangling the data')
@@ -142,7 +148,7 @@ def show_data_exploration(data_directory):
     st.title('Results')
     st.write('After some cleanup we managed to create a consolided CSV of cardiac arrests')
     
-    arrests_df = pd.read_csv(os.path.join('transformed_data', 'location/arrests.csv'))
+    arrests_df = load_data(LOCATION_PATH / 'arrests.csv')
 
     # Assuming the DataFrame has 'latitude' and 'longitude' columns
     arrests_map_data = arrests_df[['lat', 'lon']]

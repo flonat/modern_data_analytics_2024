@@ -6,6 +6,12 @@ import ast
 import plotly.express as px
 from scripts.paths import COMPARE_PATH
 
+@st.cache_data
+def load_data(file_path):
+    df = pd.read_csv(file_path)
+    return df
+
+
 def show_potential_locations_visualization():
     st.title('Visualizing Optimal Potential AED Locations')
 
@@ -83,7 +89,8 @@ Additionally, users can enter a specific potential AED ID to view the details of
             return 17
 
     # Make a input box
-    selected_potential_aed = st.number_input('Enter your interested potential AED ID', value=int(optimal_potential_aeds['potential_aed_id'].iloc[0]))
+    potential_aed_ids = optimal_potential_aeds['potential_aed_id']
+    selected_potential_aed = st.selectbox('Enter your interested potential AED ID', list(potential_aed_ids))
 
     # Check if the input value is valid
     if selected_potential_aed not in optimal_potential_aeds['potential_aed_id'].values:
