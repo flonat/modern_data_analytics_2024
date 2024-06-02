@@ -4,6 +4,10 @@ import pandas as pd
 import os
 
 def show_data_exploration(data_directory):
+    st.title('Exploring and wrangling the data')
+
+    st.write('This tab is for data exploration and wrangling. It provides an interface to interact with the data. Users can select a file from the list of gzipped Parquet files. The selected file\'s data is loaded into a DataFrame. The DataFrame\'s columns are listed for selection. Users can select a column to view its unique values. A search input field is available for entering a term to filter the data based on the selected column.')
+
     # Get a list of all the gzipped Parquet files in the data directory
     parquet_files = [f for f in os.listdir(data_directory) if f.endswith('.parquet.gzip')]
 
@@ -136,7 +140,7 @@ def show_data_exploration(data_directory):
     
     st.divider()
     st.title('Results')
-    st.text('After some cleanup we managed to create a consolided CSV of cardiac arrests')
+    st.write('After some cleanup we managed to create a consolided CSV of cardiac arrests')
     
     arrests_df = pd.read_csv(os.path.join('transformed_data', 'location/arrests.csv'))
 
