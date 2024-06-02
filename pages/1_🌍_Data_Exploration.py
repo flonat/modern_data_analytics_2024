@@ -11,11 +11,6 @@ def load_data(file_path):
     df = pd.read_csv(file_path)
     return df
 
-@st.cache_data
-def load_parquet(file_path):
-    df = pq.ParquetFile(file_path)
-    return df
-
 def format_coordinates(longitude, latitude):
     formatted_longitude = str(longitude)[:1] + '.' + str(longitude).replace('.', '')[1:]
     formatted_latitude = str(latitude)[:2] + '.' + str(latitude).replace('.', '')[2:]
@@ -33,7 +28,7 @@ def show_data_exploration(data_directory):
     selected_file = st.selectbox('Select a file', parquet_files)
 
     # Open the selected Parquet file
-    parquet_file = load_parquet(os.path.join(data_directory, selected_file))
+    parquet_file = pq.ParquetFile(os.path.join(data_directory, selected_file))
 
     # Read the data from the Parquet file
     table = parquet_file.read()
