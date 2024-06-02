@@ -6,7 +6,19 @@ import ast
 import plotly.express as px
 
 def show_potential_locations_visualization():
-    st.title("The top optimal potential AEDs location")
+    st.title('Visualizing Optimal Potential AED Locations')
+
+    st.write("""
+This section provides a detailed explanation of the two methods used to identify optimal locations for Automated External Defibrillators (AEDs): a grid-based system and a clustering method.
+1. Grid-based system: This approach divides the geographical area into a grid. Each grid point represents a potential AED location. The grid points with the highest number of cardiac arrests are considered as the optimal locations for potential AEDs. This method provides a straightforward, evenly distributed set of potential AED locations.
+2. Clustering method: This approach identifies centers of gravity of cardiac arrest occurrences. It then ranks potential AED locations based on the number of cardiac arrests they can cover. This method allows for more targeted placement of AEDs in areas with higher incidences of cardiac arrests.
+
+You can customize the number of potential AEDs they are looking for and choose the algorithm to use. The potential AED locations are displayed on a map for easy visualization. Each potential AED location is marked with a green icon, and the existing AEDs and intervention locations are also marked for reference. Users can click on the markers to get more information about each location.
+Additionally, users can enter a specific potential AED ID to view the details of that location, including the number of cardiac arrests it can cover and the distances to the nearest intervention locations. They can also select a specific cardiac arrest ID to view the distances from that location to the existing and potential AEDs.
+""")
+
+
+
     optimal_num = st.slider('How many potential AEDs you are looking for?', 50, 200, 50, step=50)
     algorithm = st.radio('Select the algorithm', ['Grid-based', 'Clustering'])
 

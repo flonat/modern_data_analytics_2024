@@ -17,6 +17,17 @@ utm32n = Proj('epsg:32632')  # UTM zone 32N (Cartesian system)
 def show_potential_locations():
     # This function is used to show potential locations for AEDs on a map
 
+    st.title('Creating candidate locations for new AEDs')
+
+    st.write("""
+This section is designed to help identify potential locations for AEDs using two distinct approaches: 
+a simple grid-based system and a more advanced K-means clustering method.
+The grid-based system generates a grid of latitude and longitude points within defined geographical boundaries, providing a straightforward, evenly distributed set of potential AED locations.
+The K-means clustering method, on the other hand, identifies centers of gravity of cardiac arrest occurrences and generates potential AED locations around these centers. This approach allows for more targeted placement of AEDs in areas with higher incidences of cardiac arrests.
+You can customize the number of centers of gravity, the number of candidate locations, and the radius around the center of gravity. The potential AED locations are displayed on a map for easy visualization. This tool aims to assist in strategic planning of AED placements, potentially improving response times in emergency situations and saving lives.
+             """)
+
+
     # Define Belgium's boundary using a simplified polygon or use an actual shapefile
     # This is not implemented yet, but you can use the commented line below as a starting point
     # gdf_belgium = gpd.read_file('./be_1km.shp') 
