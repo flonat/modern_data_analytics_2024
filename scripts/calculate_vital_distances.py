@@ -3,7 +3,7 @@ import sys
 import pandas as pd
 import sys
 import numpy as np
-from paths import LOCATION_PATH, DISTANCE_PATH
+from scripts.paths import LOCATION_PATH, DISTANCE_PATH
 
 
 from sklearn.metrics.pairwise import haversine_distances

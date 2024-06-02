@@ -2,7 +2,7 @@ import googlemaps
 import pyarrow.parquet as pq
 import pandas as pd
 import os
-from paths import DATA_PATH, INFORMATION_PATH, LOCATION_PATH
+from scripts.paths import DATA_PATH, INFORMATION_PATH, LOCATION_PATH
 
 GOOGLE_MAPS_API_KEY = os.environ['GOOGLE_MAPS_API_KEY']
 gmaps = googlemaps.Client(key=GOOGLE_MAPS_API_KEY)  

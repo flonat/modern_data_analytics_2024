@@ -1,7 +1,7 @@
 import pandas as pd
 import sys
 import numpy as np
-from paths import LOCATION_PATH, DISTANCE_PATH, DISTANCE_PATH, COMPARE_PATH
+from scripts.paths import LOCATION_PATH, DISTANCE_PATH, DISTANCE_PATH, COMPARE_PATH
 from calculate_vital_distances import calculate_vital_distances
 
 def nest_list(group):

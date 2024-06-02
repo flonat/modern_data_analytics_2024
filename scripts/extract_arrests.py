@@ -1,7 +1,7 @@
 import pyarrow.parquet as pq
 import numpy as np
 import pandas as pd
-from paths import DATA_PATH, INFORMATION_PATH, LOCATION_PATH
+from scripts.paths import DATA_PATH, INFORMATION_PATH, LOCATION_PATH
 
 
 def extract_arrests():
