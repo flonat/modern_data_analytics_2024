@@ -5,14 +5,16 @@ from potential_locations_visualization import show_potential_locations_visualiza
 from comparing_algos import show_compare_algos
 from logistic_regression import logistic_regression
 
+st.set_page_config(layout='wide')
+
 # Set the path to your data directory
 data_directory = "./data"
 
 intro, data_exploration, possible_locations, viz, logistics = st.tabs([
-    "Intro",
-    "Data exploration & wrangling", 
-    "Possible locations", 
-    "Visualization", 
+    "Intro 👉",
+    "Data exploration & wrangling 👉", 
+    "Possible locations 👉", 
+    "Visualization 👉", 
     "Predict patient survival from waiting time"
     ])
 
@@ -27,7 +29,7 @@ In this project, we aimed to analyze the impact of time-to-hospital on patient s
 
 3. **Potential Locations Visualization**: We visualized the potential AED locations. This allowed us to interactively explore the potential AED locations, their proximity to interventions, and the impact of placing an AED at these locations.
 
-4. **Logistic Regression**: We attempted to model the relationship between time-to-hospital and survival rate using logistic regression. We used various control variables and calculated survival percentages for different waiting times. However, the model did not perform as expected. We hypothesize that there is a hidden third variable that explained both the longer time to hospital and the survival rate, leading to a spurious correlation.
+4. **Logistic Regression**: We attempted to model the relationship between time-to-hospital and survival rate using logistic regression. We used various control variables and calculated survival percentages for different waiting times. However, the model did not perform as expected. We hypothesize that there isa hidden third variable that explained both the longer time to hospital and the survival rate, leading to a spurious correlation.
 
 Despite the unexpected results from the logistic regression model, this project provided valuable insights into the factors affecting patient survival rates and the potential benefits of strategically placed AEDs. It also highlighted the importance of considering hidden variables when interpreting the results of statistical models.
 """)

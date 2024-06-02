@@ -10,7 +10,6 @@ import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 from scripts.paths import INFORMATION_PATH
 
-st.set_page_config(layout='wide')
 
 @st.cache_data
 def load_data():
