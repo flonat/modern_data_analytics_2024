@@ -1,5 +1,4 @@
 import streamlit as st
-import numpy as np
 import pandas as pd
 import folium
 from streamlit_folium import st_folium
@@ -8,7 +7,6 @@ import plotly.express as px
 
 def show_potential_locations_visualization():
     st.title("The top optimal potential AEDs location")
-    # Move selection boxes to the sidebar
     optimal_num = st.slider('How many potential AEDs you are looking for?', 50, 200, 50, step=50)
     algorithm = st.radio('Select the algorithm', ['Grid-based', 'Clustering'])
 
@@ -18,7 +16,6 @@ def show_potential_locations_visualization():
     else:  # Clustering
         grouped_interventions = pd.read_csv("./transformed_data/compare/add_province_gravity.csv")  # adjust this path to your clustering results
 
-    # Filter the top 50 potential AEDs by arrest_count
     optimal_potential_aeds = grouped_interventions.nlargest(optimal_num, 'arrest_count')
     st.write(f"**With a budget of {optimal_num} AEDs, {algorithm} algorithm shortens the distance to the closest AED for {optimal_potential_aeds['arrest_count'].sum()} cardiac arrests**")
    
@@ -41,8 +38,7 @@ def show_potential_locations_visualization():
                 fg.add_child(
                     folium.Marker(
                         location=[lat1, lon1],
-                        popup=f"Intervention ID: {intervention_id}<br>Closest Existing AED ID: {existing_aed_id}<br>Cloest Potential AED ID: {row['potential_aed_id']}",
-                        tooltip=f"Intervention ID: {intervention_id}<br>Closest Existing AED ID: {existing_aed_id}<br>Cloest Potential AED ID: {row['potential_aed_id']}",
+                        tooltip=f"Intervention ID: {intervention_id}",
                         icon=folium.Icon(color='red', icon='heart')
                     )
                 )
@@ -50,7 +46,6 @@ def show_potential_locations_visualization():
                 fg.add_child(
                     folium.Marker(
                         location=[lat2, lon2],
-                        popup=f"Existing AED ID: {existing_aed_id}",
                         tooltip=f"Existing AED ID: {existing_aed_id}",
                         icon=folium.Icon(color='blue', icon='flash')
                     )
@@ -74,29 +69,13 @@ def show_potential_locations_visualization():
         else:
             return 17
 
-    # Display initial map in Streamlit
-    selected_potential_aed = st.selectbox('Select your interested potential AED ID', ["--"] + list(optimal_potential_aeds['potential_aed_id']))
-    if selected_potential_aed == "--":
-        # Plotly scatter plot
-        fig = px.scatter(
-            optimal_potential_aeds, 
-            x='Province', 
-            y='arrest_count', 
-            hover_data=['potential_aed_id'],
-            labels={'arrest_count': 'Arrest Count', 'province': 'Province'},
-            title='Hover over an AED point to get ID information',
-            size='arrest_count',
-            color='arrest_count',
-            color_continuous_scale=px.colors.sequential.Viridis
-        )
-        fig.update_layout(
-            yaxis=dict(title='Arrest Count'),
-            xaxis=dict(title='Province'),
-            showlegend=False
-        )
-        fig.update_traces(marker=dict(line=dict(width=2, color='DarkSlateGrey')))
-        return st.plotly_chart(fig)
+    # Make a input box
+    selected_potential_aed = st.number_input('Enter your interested potential AED ID', value=int(optimal_potential_aeds['potential_aed_id'].iloc[0]))
 
+    # Check if the input value is valid
+    if selected_potential_aed not in optimal_potential_aeds['potential_aed_id'].values:
+        st.warning("Please enter a valid potential AED ID, we still provide you the most optimal result:)")
+        selected_potential_aed = int(optimal_potential_aeds['potential_aed_id'].iloc[0])
     # Filter the data for the selected potential AED
     selected_aed_data = optimal_potential_aeds[optimal_potential_aeds['potential_aed_id'] == selected_potential_aed].iloc[0]
     arrest_count_output = selected_aed_data['arrest_count']
@@ -159,10 +138,35 @@ def show_potential_locations_visualization():
             opacity=1
         ).add_to(m)
 
-    # Display map in Streamlit
-    out = st_folium(
-        m,
-        feature_group_to_add=nearest_intervention_fg,
-        width=500,
-        height=500,
+    # Plotly scatter plot
+    fig = px.scatter(
+        optimal_potential_aeds, 
+        x='Province', 
+        y='arrest_count', 
+        hover_data=['potential_aed_id'],
+        labels={'arrest_count': 'Arrest Count', 'province': 'Province'},
+        title='Hover over an AED point to get ID information',
+        size='arrest_count',
+        color='arrest_count',
+        color_continuous_scale=px.colors.sequential.Viridis
     )
+    fig.update_layout(
+        yaxis=dict(title='Arrest Count'),
+        xaxis=dict(title='Province'),
+        showlegend=False
+    )
+    fig.update_traces(marker=dict(line=dict(width=2, color='DarkSlateGrey')))
+    
+    # Display the map and Plotly chart in two columns
+    col1, col2 = st.columns(2)
+    with col1:
+        st.plotly_chart(fig, use_container_width=True)
+    
+    with col2:
+        st_folium(
+            m,
+            feature_group_to_add=nearest_intervention_fg,
+            width=600,
+            height=600,
+            )
+   
