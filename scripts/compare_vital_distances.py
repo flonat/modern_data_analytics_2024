@@ -65,6 +65,7 @@ def compare_vital_distances(new_aed_csv, old_aed_csv='old_aeds.csv'):
         
 if __name__ == '__main__':
     if len(sys.argv) > 2:
+        print('Comparing vital distances of', sys.argv[1], 'with', sys.argv[2])
         compare_vital_distances(sys.argv[1], sys.argv[2])
     else:
         print('No old AED file provided, using old_aeds.csv')

@@ -4,6 +4,7 @@ import folium
 from streamlit_folium import st_folium
 import ast
 import plotly.express as px
+from scripts.paths import COMPARE_PATH
 
 def show_potential_locations_visualization():
     st.title('Visualizing Optimal Potential AED Locations')
@@ -24,9 +25,9 @@ Additionally, users can enter a specific potential AED ID to view the details of
 
     # Load the grouped interventions data based on the selected algorithm
     if algorithm == 'Grid-based':
-        grouped_interventions = pd.read_csv("./transformed_data/compare/add_province_grid.csv")
+        grouped_interventions = pd.read_csv(COMPARE_PATH / "add_province_grid.csv")
     else:  # Clustering
-        grouped_interventions = pd.read_csv("./transformed_data/compare/add_province_gravity.csv")  # adjust this path to your clustering results
+        grouped_interventions = pd.read_csv(COMPARE_PATH / "add_province_gravity.csv")  # adjust this path to your clustering results
 
     optimal_potential_aeds = grouped_interventions.nlargest(optimal_num, 'arrest_count')
     st.write(f"**With a budget of {optimal_num} AEDs, {algorithm} algorithm shortens the distance to the closest AED for {optimal_potential_aeds['arrest_count'].sum()} cardiac arrests**")
